@@ -2,7 +2,7 @@
 
 Live 2D simulations of things moving through water, solved in your browser on the GPU with the lattice Boltzmann method and checked against published data.
 
-**[Open the gallery →](https://amalmehta.github.io/FluidGallery/)**
+**[Open the gallery →](https://amalmehta.com/FluidGallery/)**
 
 | | |
 |---|---|
