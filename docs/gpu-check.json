@@ -1,0 +1,13 @@
+{
+ "when": "2026-11-11",
+ "renderer": "Intel UHD Graphics 630 (ANGLE Metal), Chromium",
+ "field": "5.9e-4",
+ "force": "1.12%",
+ "rows": [
+  { "id": "cylinder", "rms": "8.6e-6", "max": "1.3e-5", "force": "0.003%" },
+  { "id": "spinning", "rms": "1.1e-5", "max": "2.0e-5", "force": "0.037%" },
+  { "id": "foil", "rms": "2.9e-4", "max": "2.6e-2", "force": "1.119% (over the 1% limit)" },
+  { "id": "fish", "rms": "2.4e-4", "max": "1.1e-2", "force": "0.259%" },
+  { "id": "draw", "rms": "5.9e-4", "max": "2.4e-2", "force": "0.346%" }
+ ]
+}

@@ -24,8 +24,13 @@ function run(name) {
   });
 }
 
-const queue = [...names];
-await Promise.all(Array.from({ length: JOBS }, async () => { while (queue.length) await run(queue.shift()); }));
+// REUSE=1 rebuilds the reports from docs/validation-raw.json without rerunning the solver.
+if (process.env.REUSE) Object.assign(results, JSON.parse(readFileSync('docs/validation-raw.json', 'utf8')));
+else {
+  const queue = [...names];
+  await Promise.all(Array.from({ length: JOBS }, async () => { while (queue.length) await run(queue.shift()); }));
+  writeFileSync('docs/validation-raw.json', JSON.stringify(results, null, 1));
+}
 
 // ---- Pass/fail criteria (defined in the spec, DEFINITIONS AND DEFERRED) ----
 const R = results;
@@ -46,6 +51,11 @@ const checks = [
   { what: 'Fish: drag at St=0.2, thrust by St=0.5', pass: R['fish-st020'].cd > 0 && R['fish-st050'].cd < 0, detail: ['fish-st020', 'fish-st035', 'fish-st050'].map((n) => `St ${R[n].params.St}: ${f(R[n].cd)}`).join(', ') },
   { what: 'No run went unstable', pass: Object.values(R).every((r) => !r.nan), detail: `${Object.keys(R).length} runs` },
 ];
+const gpuData = existsSync('docs/gpu-check.json') ? JSON.parse(readFileSync('docs/gpu-check.json', 'utf8')) : null;
+if (gpuData) {
+  checks.push({ what: 'GPU matches CPU: flow fields (rms < 1e-3 U)', pass: parseFloat(gpuData.field) < 1e-3, detail: `worst ${gpuData.field}` });
+  checks.push({ what: 'GPU matches CPU: mean force (< 1%)', pass: parseFloat(gpuData.force) < 1, detail: `worst ${gpuData.force} (${gpuData.rows.filter((r) => parseFloat(r.force) >= 1).map((r) => r.id).join(', ') || 'none over'})` });
+}
 
 const gpu = existsSync('docs/gpu-check.json') ? JSON.parse(readFileSync('docs/gpu-check.json', 'utf8')) : null;
 const when = new Date().toISOString().slice(0, 10);

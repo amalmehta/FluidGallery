@@ -6,7 +6,7 @@ Live 2D simulations of things moving through water, solved in your browser on th
 
 | | |
 |---|---|
-| ![Cylinder wake](assets/thumbs/cylinder-light.png) **Cylinder Wake**: the von Kármán vortex street. *Checked* against St and drag at Re = 100. | ![Spinning cylinder](assets/thumbs/spinning-light.png) **Spinning Cylinder**: Magnus lift, shedding that stops at high spin. *Checked* against published trends. |
+| ![Cylinder wake](assets/thumbs/cylinder-light.png) **Cylinder Wake**: the von Kármán vortex street. *Checked* against St and drag at Re = 100. | ![Spinning cylinder](assets/thumbs/spinning-light.png) **Spinning Cylinder**: Magnus lift, shedding that fades at high spin. *Checked* against published trends. |
 | ![Flapping wing](assets/thumbs/foil-light.png) **Flapping Wing**: heave faster and drag turns into thrust. *Qualitative.* | ![Swimming fish](assets/thumbs/fish-light.png) **Swimming Fish**: carangiform kinematics from real fish data. *Qualitative.* |
 | ![Draw and drag](assets/thumbs/draw-light.png) **Draw and Drag**: sketch any shape and drag it through the water. | Blue = water spinning clockwise, terracotta = counter-clockwise. Every image here is a real run of the solver. |
 

@@ -112,10 +112,10 @@ export const CONTENT = {
     kind: 'machine',
     check: 'checked',
     seeing:
-      'The cylinder spins clockwise, so its top surface moves with the stream and its bottom against it. Flow speeds up over the top and slows underneath, and the pressure difference pushes the cylinder up. As the spin ratio α grows, lift grows and the vortex street weakens until, near α ≈ 1.9 at Re = 100, shedding stops altogether.',
+      'The cylinder spins clockwise, so its top surface moves with the stream and its bottom against it. Flow speeds up over the top and slows underneath, and the pressure difference pushes the cylinder up. As the spin ratio α grows, lift grows and the vortex street weakens. Published 2D results put the point where shedding stops near α ≈ 1.8–1.9 at Re = 100. Here, by α = 2 the lift wiggle has shrunk about 9-fold but not quite vanished, perhaps because the channel walls shift the threshold (untested).',
     tryThis: [
       'Set α to 0: it’s the plain cylinder, with lift averaging zero.',
-      'Raise α slowly to 2. The mean lift climbs and the wiggle in the lift trace dies.',
+      'Raise α slowly to 2. The mean lift climbs and the wiggle in the lift trace shrinks almost to nothing.',
       'Compare the measured lift with the ideal-flow line 2πα; real (viscous) lift is always lower.',
     ],
     equations: [
@@ -194,10 +194,10 @@ export const CONTENT = {
     kind: 'animal',
     check: 'qualitative',
     seeing:
-      'A fish shape held in a current (tethered, like in a flume) bends with a wave that travels from head to tail and grows toward the tail, the carangiform style of mackerel and jacks. Each tail beat sheds a vortex. Strong enough beats form a reverse street that pushes water back: the net force along the body turns from drag to thrust.',
+      'A fish shape held in a current (tethered, like in a flume) bends with a wave that travels from head to tail and grows toward the tail, the carangiform style of mackerel and jacks. Each tail beat sheds a vortex and pushes water back. Stronger beats cut the net drag, but here (2D, Re ≤ ~800) the tethered body never quite reaches net thrust: we measured net drag at every rate from St 0.2 to 0.5. Viscous drag on a 2D body at low Reynolds number is far larger than on a real fish.',
     tryThis: [
       'Lower St to 0.15: the tail flicks weakly and the body is dragged backwards ($C_x > 0$).',
-      'Raise St toward 0.3–0.4 (where real fish cruise). Net force crosses zero into thrust.',
+      'Raise St from 0.2 to 0.5 and watch the net force $C_x$ fall from about 0.22 to 0.05: more tail, less drag. Real fish cruise near St 0.3, at Reynolds numbers 100–1000× higher.',
       'Watch the head: it barely moves; the motion is in the back third.',
     ],
     equations: [
@@ -226,6 +226,7 @@ export const CONTENT = {
     ],
     limits: [
       'Qualitative only: a 2D slice with a NACA 0012 thickness, not a real fish cross-section.',
+      'Measured: net drag at every tail-beat rate tested (St 0.2, 0.35, 0.5), though it falls steadily. It does not show a fish swimming forward.',
       'Tethered in a current with prescribed motion: it doesn’t swim freely or react to forces.',
       'Re ≤ ~800 (body length), versus 10⁵ or more for real fish. The wall speed uses the small-amplitude (sideways-only) form.',
     ],

@@ -61,7 +61,7 @@ function tiles(st, p) {
         { k: 'Spin ratio α', v: p.alpha.toFixed(1) },
         { k: 'Mean lift <i>C</i><sub>L</sub>', v: s(st.cl, 2), ref: `ideal flow 2πα = ${ideal.toFixed(2)}` },
         { k: 'Mean drag <i>C</i><sub>D</sub>', v: s(st.cd, 2) },
-        { k: 'Shedding St', v: st.clAmp > 0.03 ? s(st.st, 3) : (settling ? '…' : 'none'), ref: p.alpha >= 1.9 ? 'expected: stops near α ≈ 1.9' : '' },
+        { k: 'Shedding St', v: st.clAmp > 0.03 ? s(st.st, 3) : (settling ? '…' : 'none'), ref: p.alpha >= 1.9 ? 'published: stops near α ≈ 1.8–1.9' : '' },
       ];
     }
     case 'foil':
@@ -408,9 +408,9 @@ function checksHtml() {
   const v = VALIDATION[id];
   const intro = {
     cylinder: 'The reference solver (the same equations, on the CPU) ran the cylinder at Re = 100 until the shedding was steady, then measured the shedding frequency and mean drag over the last cycles. It also checked that the wake stays steady at Re = 40, below the onset near 47.',
-    spinning: 'The reference solver ran the spinning cylinder at Re = 100 for several spin ratios and checked three things from the literature: mean lift rises with spin, it stays below the ideal-flow value 2πα, and shedding stops once α passes about 1.9.',
+    spinning: 'The reference solver ran the spinning cylinder at Re = 100 for several spin ratios and checked three things from the literature: mean lift rises with spin, it stays below the ideal-flow value 2πα, and shedding stops once α passes about 1.9. The first two hold; the third only partly: at α = 2 the lift swing is down 9-fold, short of our 10-fold pass mark.',
     foil: 'Qualitative check: at a low flapping rate the mean force must be drag, and at a high one thrust, the transition reported in flapping-foil experiments. We don’t claim exact thrust values.',
-    fish: 'Qualitative check: with weak tail beats the body is dragged back, and with strong ones (St ≈ 0.4) the mean force flips to thrust. The kinematics are copied from published fish data; the forces are not compared number for number.',
+    fish: 'Qualitative check, set before running: with weak tail beats the body is dragged back, and by St = 0.5 the mean force should flip to thrust. It did not: net drag falls steadily but stays positive. The kinematics are copied from published fish data; the forces are not compared number for number.',
     draw: 'Not checked against data. The moving-wall method underneath it is the same one the fish and wing use, and the GPU-vs-CPU test confirms the moving-body code matches the reference solver.',
   }[id];
   const rows = (v?.rows || []).map((r) => `<div class="row"><span>${esc(r.what)}</span><span class="num">${esc(r.measured)}</span><span class="num muted">${esc(r.reference)}</span></div>`).join('');
