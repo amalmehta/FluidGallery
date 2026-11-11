@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluid Gallery</title>
+<meta name="description" content="Live 2D fluid simulations of things moving through water: a cylinder wake, a spinning cylinder, a flapping wing, a swimming fish and a shape you draw. Solved in your browser with the lattice Boltzmann method and checked against published data.">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="src/ui/styles.css">
+<script src="src/ui/boot.js"></script>
+</head>
+<body>
+<div id="top"></div>
+<main class="wrap">
+  <section class="hero">
+    <h1>See how moving things push water around.</h1>
+    <p>Five live simulations of bodies moving through water, solved in your browser from the lattice Boltzmann equations. Change one number, like speed, spin or flapping rate, and watch the wake and the forces change within seconds.</p>
+    <div class="facts" id="facts"></div>
+  </section>
+  <section class="grid" id="grid" aria-label="Simulations"></section>
+  <section class="explainer" id="explainer"></section>
+</main>
+<footer class="wrap site">
+  <span>Fluid Gallery &middot; 2D lattice Boltzmann, TRT collision &middot; <a href="https://github.com/amalmehta/FluidGallery">Source and validation</a></span>
+  <span>Stores only your display settings, in this browser.</span>
+</footer>
+<script type="module" src="src/ui/gallery.js"></script>
+</body>
+</html>

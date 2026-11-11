@@ -1,0 +1,65 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>GPU Check</title>
+<style>body{font:14px/1.5 system-ui;margin:24px;background:#F7F3EC;color:#2B2824}pre{white-space:pre-wrap}</style>
+<h1>GPU vs CPU solver</h1>
+<p>Runs the same scenes on the CPU reference solver and the WebGL2 solver, then compares the flow fields and forces.</p>
+<pre id="out">Running…</pre>
+<canvas id="c" width="300" height="120"></canvas>
+<script type="module">
+import { byId, defaults, advance } from '../src/lbm/scenes.js';
+import { GpuLattice } from '../src/lbm/gpu.js';
+const out = document.getElementById('out');
+const log = (s) => { out.textContent += '\n' + s; };
+out.textContent = '';
+const gl = document.getElementById('c').getContext('webgl2');
+log('WebGL2: ' + !!gl + ', float targets: ' + GpuLattice.supported(gl));
+log('Renderer: ' + (gl.getExtension('WEBGL_debug_renderer_info') ? gl.getParameter(gl.getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL) : '?'));
+const results = {};
+async function compare(id, steps, q) {
+  const sc = byId(id), p = defaults(sc);
+  const a = sc.build(p, q); // CPU
+  const b = sc.build(p, q, (o) => new GpuLattice(gl, o));
+  if (a.body.steer) { a.body.target = [a.lat.nx * 0.6, a.lat.ny * 0.55]; b.body.target = [...a.body.target]; }
+  const fa = [], fb = [];
+  for (let i = 0; i < steps + 1; i++) { advance(a); fa.push([a.lat.fx, a.lat.fy]); }
+  for (let i = 0; i < steps; i++) { advance(b); if (i % 200 === 199) fb.push(...b.lat.readForces()); }
+  fb.push(...b.lat.readForces());
+  // GPU state after k steps corresponds to CPU macro fields computed during step k+1.
+  const m = b.lat.readMacro();
+  let se = 0, mx = 0, n = 0;
+  for (let i = 0; i < a.lat.N; i++) {
+    if (a.lat.solid[i]) continue;
+    const d = Math.hypot(a.lat.ux[i] - m.ux[i], a.lat.uy[i] - m.uy[i]);
+    se += d * d; mx = Math.max(mx, d); n++;
+  }
+  const U = a.U;
+  // force: CPU step k+1 pushes the links that GPU step k pulls
+  const meanF = (arr, k) => arr.slice(-500).reduce((s, v) => s + v[k], 0) / 500;
+  const ca = [meanF(fa.slice(1), 0), meanF(fa.slice(1), 1)], cb = [meanF(fb, 0), meanF(fb, 1)];
+  const r = { rmsDu: Math.sqrt(se / n) / U, maxDu: mx / U, Fx: [ca[0], cb[0]], relFx: Math.abs(ca[0] - cb[0]) / Math.abs(ca[0]) };
+  log(`${id} (${steps} steps, q=${q}): rms|Δu|/U = ${r.rmsDu.toExponential(2)}, max|Δu|/U = ${r.maxDu.toExponential(2)}, mean Fx cpu ${ca[0].toFixed(5)} gpu ${cb[0].toFixed(5)} (rel diff ${(r.relFx * 100).toFixed(3)}%)`);
+  results[id] = { ...r, renderer: '' };
+  b.lat.dispose();
+}
+await compare('cylinder', 2000, 0.75);
+await compare('spinning', 2000, 0.75);
+await compare('foil', 1500, 0.75);
+await compare('fish', 1500, 0.75);
+await compare('draw', 1500, 0.75);
+// speed
+const sc = byId('cylinder'); const s = sc.build(defaults(sc), 1, (o) => new GpuLattice(gl, o));
+const t0 = performance.now(); for (let i = 0; i < 2000; i++) advance(s); s.lat.readForces(); const ms = performance.now() - t0;
+log(`GPU speed: ${(s.lat.N * 2000 / ms / 1000).toFixed(0)} MLUPS, ${(2000 / ms * 1000).toFixed(0)} steps/s on ${s.lat.nx}x${s.lat.ny}`);
+const rows = Object.entries(results).map(([id, r]) => ({ id, rms: r.rmsDu.toExponential(1), max: r.maxDu.toExponential(1), force: (r.relFx * 100).toFixed(3) + '%' }));
+const json = {
+  when: new Date().toISOString().slice(0, 10),
+  renderer: (gl.getExtension('WEBGL_debug_renderer_info') ? gl.getParameter(gl.getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL) : 'unknown').replace(/ANGLE \(|\)$/g, ''),
+  field: Math.max(...Object.values(results).map((r) => r.rmsDu)).toExponential(1),
+  force: (Math.max(...Object.values(results).map((r) => r.relFx)) * 100).toFixed(2) + '%',
+  rows,
+};
+window.__gpuCheck = json;
+log('\nJSON for docs/gpu-check.json:\n' + JSON.stringify(json, null, 1));
+log('done');
+</script>

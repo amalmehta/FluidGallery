@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+*.log
+.claude/
+# Personal project notes (spec with personal profile, agent instructions): kept local by default
+fluid dynamics simulator around various things in motion, with accurate equations.md
+CLAUDE.md
+Shortcuts.md

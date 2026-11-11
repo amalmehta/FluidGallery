@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Stability Check</title>
+<style>body{font:14px/1.5 system-ui;margin:24px;background:#F7F3EC;color:#2B2824}pre{white-space:pre-wrap}</style>
+<h1>Stability at the slider extremes</h1>
+<p>Runs every scene on the GPU at its highest allowed Reynolds number for each quality, plus the other slider extremes, and reports whether the flow stays finite. Add <code>?scenes=foil,fish</code> to run a subset.</p>
+<pre id="out"></pre>
+<script type="module">
+import { SCENES, byId, advance, paramMax, QUALITY } from '../src/lbm/scenes.js';
+import { GpuLattice } from '../src/lbm/gpu.js';
+const out = document.getElementById('out');
+const log = (s) => { out.textContent += s + '\n'; };
+const gl = document.createElement('canvas').getContext('webgl2');
+const only = new URLSearchParams(location.search).get('scenes');
+const steps = +(new URLSearchParams(location.search).get('steps') || 6000);
+const results = [];
+for (const sc of SCENES.filter((s) => !only || only.split(',').includes(s.id))) {
+  for (const qn of Object.keys(QUALITY)) {
+    const q = QUALITY[qn];
+    const hi = Object.fromEntries(sc.params.map((p) => [p.key, paramMax(sc, p, q)]));
+    const lo = Object.fromEntries(sc.params.map((p) => [p.key, p.key === 'Re' ? paramMax(sc, p, q) : p.min]));
+    for (const p of [hi, lo]) {
+      const b = sc.build(p, q, (o) => new GpuLattice(gl, o));
+      if (b.body.steer) b.body.target = [b.lat.nx * 0.7, b.lat.ny * 0.6];
+      let bad = null;
+      for (let k = 1; k <= steps; k++) {
+        if (b.body.steer && k % 1500 === 0) b.body.target = [b.lat.nx * (k % 3000 ? 0.25 : 0.7), b.lat.ny * 0.4];
+        advance(b);
+        if (k % 250 === 0) { b.lat.readForces(); if (b.lat.hasNaN()) { bad = k; break; } }
+      }
+      const m = b.lat.readMacro();
+      let dev = 0; for (let i = 0; i < m.rho.length; i++) if (!b.lat.solid[i]) dev = Math.max(dev, Math.abs(m.rho[i] - 1));
+      const ok = !bad && dev < 0.25;
+      results.push({ id: sc.id, q: qn, p, ok, dev });
+      log(`${ok ? 'ok  ' : 'FAIL'} ${sc.id} ${qn} ${JSON.stringify(p)} tau=${(3 * b.lat.nu + 0.5).toFixed(3)} ${bad ? 'NaN at step ' + bad : 'max|rho-1| ' + dev.toFixed(3)}`);
+      b.lat.dispose();
+      await new Promise((r) => setTimeout(r, 0));
+    }
+  }
+}
+log(results.every((r) => r.ok) ? 'ALL STABLE' : 'SOME FAILED');
+window.__stability = results;
+</script>

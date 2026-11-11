@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulation · Fluid Gallery</title>
+<meta name="description" content="A live 2D fluid simulation, solved in your browser with the lattice Boltzmann method.">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="src/ui/styles.css">
+<script src="src/ui/boot.js"></script>
+</head>
+<body>
+<div id="top"></div>
+<main class="wrap" id="main"></main>
+<footer class="wrap site">
+  <span>Fluid Gallery &middot; <a href="./index.html">All simulations</a> &middot; <a href="https://github.com/amalmehta/FluidGallery">Source and validation</a></span>
+  <span>Keys: <span class="kbd">Space</span> pause &middot; <span class="kbd">R</span> restart &middot; <span class="kbd">&larr;</span><span class="kbd">&rarr;</span> other sims &middot; <span class="kbd">&#8984;,</span> settings</span>
+</footer>
+<script type="module" src="src/ui/sim.js"></script>
+</body>
+</html>
