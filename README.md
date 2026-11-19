@@ -25,3 +25,7 @@ flowchart LR
 - [Prompt log](docs/PROMPTS.md)
 
 2D and low Reynolds number (20–800): the mechanisms carry over to real drones and fish, the exact numbers don't. Each sim states its own limits.
+
+## How it was built
+
+How this was built and how it works, with diagrams: [docs/HOW-IT-WAS-BUILT.md](docs/HOW-IT-WAS-BUILT.md)
