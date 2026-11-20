@@ -6,7 +6,7 @@ Fluid Gallery is a static website with five live 2D simulations of bodies in wat
 ## Build history
 
 ```mermaid
-flowchart LR
+flowchart TD
   I["Idea: a gallery of live 2D fluid sims of things moving through water"]
   K1["Kickoff 2026-11-11: for robotics/RL intuition first, teaching and portfolio second"]
   K2["Kickoff 2026-11-11: accurate means real 2D Navier-Stokes via lattice Boltzmann, checked against published results"]
